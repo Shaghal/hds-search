@@ -9,7 +9,6 @@ const ImageInput: React.FC<Props> = ({ onChange }) => {
   const [imgData, setImgData] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  console.log({ imgData });
 
   const onDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();

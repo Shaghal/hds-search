@@ -7,7 +7,18 @@ import { useState } from "react";
 import { SearchCardType } from "@Components/SearchCard/types";
 import Loading from "@Components/Loading";
 
+
+const API_ENV = process.env.REACT_APP_API_ENV;
+const BUCKET_NAME = process.env.REACT_APP_BUCKET_NAME;
+const MINIO_SERVER = process.env.REACT_APP_MINIO_SERVER;
+const QUERY_SERVER = process.env.REACT_APP_QUERY_SERVER;
+const API_VENDOR = process.env.REACT_APP_API_VENDOR;
+const IMAGE_BASE_URL = `${MINIO_SERVER}/${BUCKET_NAME}/`;
+
 function App() {
+  console.table({ API_ENV, BUCKET_NAME, MINIO_SERVER, QUERY_SERVER });
+  // TODO: handle with select component
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [rowElementsCount, setRowElementsCount] = useState(8);
   const [textQuery, setTextQuery] = useState("");
   const [imageQuery, setImageQuery] = useState<String>("");
@@ -16,32 +27,28 @@ function App() {
   function submitData() {
     if (textQuery || imageQuery) {
       setIsLoading(true);
-      fetch(
-        `http://172.27.226.11:5533/api/v2${imageQuery ? "/b64" : ""}/_search`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            limit: 20,
-            // collection: "dartil_search",
-            text_query: textQuery,
-            ...(imageQuery && { image_query: imageQuery.split(",")[1] }),
-            vendor: "dartil",
-            environment: "test",
-            domain: "bigG",
-            payload: true,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-          redirect: "follow",
-        }
-      )
+      fetch(`${QUERY_SERVER}${imageQuery ? "/b64" : ""}/_search`, {
+        method: "POST",
+        body: JSON.stringify({
+          limit: 20,
+          // collection: "dartil_search",
+          text_query: textQuery,
+          ...(imageQuery && { image_query: imageQuery.split(",")[1] }),
+          vendor: API_VENDOR,
+          environment: API_ENV,
+          domain: "bigG",
+          payload: true,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        redirect: "follow",
+      })
         .then((response) => response.json())
         .then(({ result }) => {
           setResultList(
             result.map((item) => {
-              item.payload.image =
-                "http://172.27.226.72:9000/dartil-test/" + item.payload.image;
+              item.payload.image = IMAGE_BASE_URL + item.payload.image;
               return item;
             })
           );
@@ -68,13 +75,13 @@ function App() {
           }}
           placeholder="متن جستجو"
         />
-        <TextInput
+        {/* <TextInput
           onChange={(e) => {
             setRowElementsCount(Number(e.target.value) || 0);
           }}
           defaultValue={rowElementsCount}
           placeholder="تعداد آیتم در هر ردیف"
-        />
+        /> */}
         <button className={styles.searchButton} onClick={submitData}>
           جستجو
         </button>
@@ -94,22 +101,6 @@ function App() {
           <SearchCard key={searchItem.id} {...searchItem} />
         ))}
       </div>
-      {/* {resultList.map(
-        (rowItems, index) =>
-          rowItems?.length && (
-            <div
-              key={index}
-              className={styles.resultContainer}
-              style={{
-                gridTemplateColumns: `repeat(${rowElementsCount}, 1fr)`,
-              }}
-            >
-              {rowItems.map((searchItem) => (
-                <SearchCard key={searchItem.id} {...searchItem} />
-              ))}
-            </div>
-          )
-      )} */}
     </div>
   );
 }
