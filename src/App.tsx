@@ -13,10 +13,12 @@ const BUCKET_NAME = process.env.REACT_APP_BUCKET_NAME;
 const MINIO_SERVER = process.env.REACT_APP_MINIO_SERVER;
 const QUERY_SERVER = process.env.REACT_APP_QUERY_SERVER;
 const API_VENDOR = process.env.REACT_APP_API_VENDOR;
+// ******************* //
 const IMAGE_BASE_URL = `${MINIO_SERVER}/${BUCKET_NAME}/`;
 
 function App() {
-  console.table({ API_ENV, BUCKET_NAME, MINIO_SERVER, QUERY_SERVER });
+  // * for debug
+  // console.table({ API_ENV, BUCKET_NAME, MINIO_SERVER, QUERY_SERVER });
   // TODO: handle with select component
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [rowElementsCount, setRowElementsCount] = useState(8);

@@ -3,6 +3,11 @@ WORKDIR /build
 COPY . .
 RUN npm install -g pnpm@8.4.0
 RUN pnpm install --production
+ENV REACT_APP_MINIO_SERVER=http://172.27.226.72:9000/
+ENV REACT_APP_QUERY_SERVER=http://172.27.226.11:5533/api/v2
+ENV REACT_APP_API_ENV=test
+ENV REACT_APP_BUCKET_NAME=digikala-test
+ENV REACT_APP_API_VENDOR=digikala
 RUN pnpm build
 RUN npm install -g serve
 EXPOSE 3000
