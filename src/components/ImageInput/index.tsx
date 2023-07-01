@@ -19,9 +19,7 @@ const ImageInput: React.FC<Props> = ({ onChange, size = 100 }) => {
   };
 
   useEffect(() => {
-    if (imgData && onChange) {
-      onChange(imgData);
-    }
+    onChange?.(imgData);
   }, [imgData, onChange]);
 
   const handleFile = (file: File) => {
@@ -83,7 +81,7 @@ const ImageInput: React.FC<Props> = ({ onChange, size = 100 }) => {
           ref={fileInputRef}
           type="file"
           onChange={(e) => {
-            if (e.target.files && e.target.files[0]) {
+            if (e.target.files) {
               handleFile(e.target.files[0]);
             }
           }}
@@ -94,10 +92,8 @@ const ImageInput: React.FC<Props> = ({ onChange, size = 100 }) => {
             className={styles.clearImage}
             onClick={(e) => {
               e.stopPropagation();
-              if (fileInputRef.current?.value) {
-                fileInputRef.current.value = "";
-                setImgData("");
-              }
+              if (fileInputRef.current) fileInputRef.current.value = "";
+              setImgData("");
             }}
           >
             حذف
