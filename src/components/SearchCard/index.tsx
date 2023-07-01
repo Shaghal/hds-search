@@ -1,15 +1,19 @@
+import { useState } from "react";
 import styles from "./SearchCard.module.css";
 import { SearchCardType } from "./types";
+import defaultLogo from "@Assets/images/dartil-logo.svg";
 
 function SearchCard({
   payload: {
     image,
     category_fa,
     title_fa,
-    product_id,
-    // title_en, price
+    // product_id,
+    // title_en,
+    // price
   },
 }: SearchCardType) {
+  const [imageSrc, setImageSrc] = useState(image);
   return (
     // <a
     //   href={`https://dartil.com/product/${product_id}`}
@@ -17,7 +21,14 @@ function SearchCard({
     // ></a>
     <div className={styles.card}>
       <div className={styles.cardImageContainer}>
-        <img className={styles.cardImage} src={image} alt="result item" />
+        <img
+          className={styles.cardImage}
+          src={imageSrc}
+          alt="result item"
+          onError={() => {
+            setImageSrc(defaultLogo);
+          }}
+        />
       </div>
       <div className={styles.cardDivider} />
       <section className={styles.cardData}>

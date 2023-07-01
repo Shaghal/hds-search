@@ -1,11 +1,12 @@
-import React, { DragEvent, useEffect, useRef, useState } from "react";
+import React, { DragEvent, useEffect, useMemo, useRef, useState } from "react";
 import styles from "./ImageInput.module.css";
 
 interface Props {
   onChange?: (value: String) => void;
+  size?: number;
 }
 
-const ImageInput: React.FC<Props> = ({ onChange }) => {
+const ImageInput: React.FC<Props> = ({ onChange, size = 100 }) => {
   const [imgData, setImgData] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -43,6 +44,23 @@ const ImageInput: React.FC<Props> = ({ onChange }) => {
     }
   };
 
+  const imageStyle = useMemo(() => {
+    const defaultStyles = {
+      width: `${size}px`,
+      height: `${size}px`,
+    };
+
+    const imageStyle = imgData
+      ? {
+          backgroundImage: `url(${imgData})`,
+          backgroundSize: "contain",
+          backgroundRepeat: "no-repeat",
+        }
+      : {};
+
+    return { ...defaultStyles, ...imageStyle };
+  }, [imgData, size]);
+
   return (
     <>
       <div
@@ -54,15 +72,7 @@ const ImageInput: React.FC<Props> = ({ onChange }) => {
           styles.uploadZone,
           ...[!imgData && styles.uploadZoneBackground],
         ].join(" ")}
-        style={
-          imgData
-            ? {
-                backgroundImage: `url(${imgData})`,
-                backgroundSize: "contain",
-                backgroundRepeat: "no-repeat",
-              }
-            : {}
-        }
+        style={imageStyle}
       >
         {!imgData && (
           <span className={styles.dropZoneText}>

@@ -26,6 +26,11 @@ function App() {
   const [imageQuery, setImageQuery] = useState<String>("");
   const [resultList, setResultList] = useState<SearchCardType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      submitData();
+    }
+  };
   function submitData() {
     if (textQuery || imageQuery) {
       setIsLoading(true);
@@ -68,6 +73,7 @@ function App() {
           onChange={(image) => {
             setImageQuery(image);
           }}
+          size={150}
         />
       </div>
       <div className={styles.formContainer}>
@@ -76,6 +82,7 @@ function App() {
             setTextQuery(e.target.value);
           }}
           placeholder="متن جستجو"
+          onKeyDown={handleKeyPress}
         />
         {/* <TextInput
           onChange={(e) => {
